@@ -1,0 +1,60 @@
+ext.git = [
+
+      execute                   : { command ->
+          try {
+              def stdout = new ByteArrayOutputStream()
+              exec {
+                  commandLine(command.split(" "))
+                  standardOutput = stdout
+              }
+              return stdout.toString().trim()
+          } catch (e) {
+              System.err.println "Error executing [$command]: \"${e.getMessage()}\"."
+              return null
+          }
+      },
+
+      tag                       : {
+          def tag = git.execute("git describe")
+          (tag == null || tag.isEmpty()) ? "NO_TAG" : tag
+      },
+
+      branch                    : {
+          git.execute("git rev-parse --abbrev-ref HEAD")
+      },
+
+      isDirty                   : {
+          def describe = git.execute("git describe --dirty")
+          if (describe == null) return true
+          describe.contains("dirty")
+      },
+
+      versionName               : { ->
+          def result = git.execute("git describe")
+
+          def branch = git.branch()
+          if (branch != "master") {
+              result += "_$branch"
+          }
+
+          if (git.getCommitCountSinceLastTag() > 0 || git.isDirty()) {
+              result += "-SNAPSHOT"
+          }
+
+          if (git.isDirty()) {
+              result += "-dirty"
+          }
+
+          return result
+      },
+
+      commitCount               : {
+          return git.execute("git rev-list --count HEAD")
+      },
+
+      getCommitCountSinceLastTag: {
+          def lastTag = git.execute("git rev-list --tags --no-walk --max-count=1")
+          return git.execute("git rev-list $lastTag..HEAD --count").toInteger()
+      }
+
+]

@@ -1,0 +1,22 @@
+apply plugin: 'kotlin'
+apply plugin: 'com.jfrog.bintray'
+apply from: '../gradle/scripts/compile.gradle'
+apply from: '../gradle/scripts/publishing.gradle'
+apply from: '../gradle/scripts/bintray.gradle'
+
+dependencies {
+    compile project(':httpmonads-retrofit')
+
+    compile rxJava
+    compile retrofit2RxJava2Adapter
+
+    compileOnly funktionaleEither
+
+    /* Tests */
+    testCompile jUnit
+    testCompile expectKt
+    testCompile mockitoKotlin
+    testCompile guava
+    testCompile kotlinReflect
+    testCompile funktionaleEither
+}
