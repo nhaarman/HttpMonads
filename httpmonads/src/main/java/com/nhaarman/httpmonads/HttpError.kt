@@ -1,6 +1,6 @@
 package com.nhaarman.httpmonads
 
-import java.io.IOException
+import java.io.*
 
 sealed class HttpError {
 
@@ -21,33 +21,35 @@ sealed class HttpError {
     }
 
     sealed class ClientError4XX : HttpError() {
-        object BadRequest400 : ClientError4XX() { override fun toString() = "BadRequest400" }
-        object Unauthorized401 : ClientError4XX() { override fun toString() = "Unauthorized401" }
-        object PaymentRequired402 : ClientError4XX() { override fun toString() = "PaymentRequired402" }
-        object Forbidden403 : ClientError4XX() { override fun toString() = "Forbidden403" }
-        object NotFound404 : ClientError4XX() { override fun toString() = "NotFound404" }
-        object MethodNotAllowed405 : ClientError4XX() { override fun toString() = "MethodNotAllowed405" }
-        object NotAcceptable406 : ClientError4XX() { override fun toString() = "NotAcceptable406" }
-        object ProxyAuthenticationRequired407 : ClientError4XX() { override fun toString() = "ProxyAuthenticationRequired407" }
-        object RequestTimeout408 : ClientError4XX() { override fun toString() = "RequestTimeout408" }
-        object Conflict409 : ClientError4XX() { override fun toString() = "Conflict409" }
-        object Gone410 : ClientError4XX() { override fun toString() = "Gone410" }
-        object LengthRequired411 : ClientError4XX() { override fun toString() = "LengthRequired411" }
-        object PreconditionFailed412 : ClientError4XX() { override fun toString() = "PreconditionFailed412" }
-        object PayloadTooLarge413 : ClientError4XX() { override fun toString() = "PayloadTooLarge413" }
-        object URITooLong414 : ClientError4XX() { override fun toString() = "URITooLong414" }
-        object UnsupportedMediaType415 : ClientError4XX() { override fun toString() = "UnsupportedMediaType415" }
-        object RangeNotSatisfiable416 : ClientError4XX() { override fun toString() = "RangeNotSatisfiable416" }
-        object ExpectationFailed417 : ClientError4XX() { override fun toString() = "ExpectationFailed417" }
-        object MisdirectedRequest421 : ClientError4XX() { override fun toString() = "MisdirectedRequest421" }
-        object UnprocessableEntry422 : ClientError4XX() { override fun toString() = "UnprocessableEntry422" }
-        object Locked423 : ClientError4XX() { override fun toString() = "Locked423" }
-        object FailedDependency424 : ClientError4XX() { override fun toString() = "FailedDependency424" }
-        object UpgradeRequired426 : ClientError4XX() { override fun toString() = "UpgradeRequired426" }
-        object PreconditionRequired428 : ClientError4XX() { override fun toString() = "PreconditionRequired428" }
-        object TooManyRequests429 : ClientError4XX() { override fun toString() = "TooManyRequests429" }
-        object RequestHeaderFieldsTooLarge431 : ClientError4XX() { override fun toString() = "RequestHeaderFieldsTooLarge431" }
-        object UnavailableForLegalReasons451 : ClientError4XX() { override fun toString() = "UnavailableForLegalReasons451" }
+        abstract val errorBody: InputStream?
+
+        class BadRequest400(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "BadRequest400" }
+        class Unauthorized401(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "Unauthorized401" }
+        class PaymentRequired402(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "PaymentRequired402" }
+        class Forbidden403(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "Forbidden403" }
+        class NotFound404(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "NotFound404" }
+        class MethodNotAllowed405(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "MethodNotAllowed405" }
+        class NotAcceptable406(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "NotAcceptable406" }
+        class ProxyAuthenticationRequired407(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "ProxyAuthenticationRequired407" }
+        class RequestTimeout408(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "RequestTimeout408" }
+        class Conflict409(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "Conflict409" }
+        class Gone410(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "Gone410" }
+        class LengthRequired411(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "LengthRequired411" }
+        class PreconditionFailed412(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "PreconditionFailed412" }
+        class PayloadTooLarge413(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "PayloadTooLarge413" }
+        class URITooLong414(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "URITooLong414" }
+        class UnsupportedMediaType415(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "UnsupportedMediaType415" }
+        class RangeNotSatisfiable416(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "RangeNotSatisfiable416" }
+        class ExpectationFailed417(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "ExpectationFailed417" }
+        class MisdirectedRequest421(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "MisdirectedRequest421" }
+        class UnprocessableEntry422(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "UnprocessableEntry422" }
+        class Locked423(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "Locked423" }
+        class FailedDependency424(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "FailedDependency424" }
+        class UpgradeRequired426(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "UpgradeRequired426" }
+        class PreconditionRequired428(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "PreconditionRequired428" }
+        class TooManyRequests429(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "TooManyRequests429" }
+        class RequestHeaderFieldsTooLarge431(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "RequestHeaderFieldsTooLarge431" }
+        class UnavailableForLegalReasons451(override val errorBody: InputStream?) : ClientError4XX() { override fun toString() = "UnavailableForLegalReasons451" }
     }
 
     sealed class ServerError5XX : HttpError() {
