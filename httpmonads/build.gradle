@@ -6,4 +6,6 @@ apply from: '../gradle/scripts/bintray.gradle'
 
 dependencies {
     compile kotlinStdLib
+
+    compileOnly rxJava
 }
