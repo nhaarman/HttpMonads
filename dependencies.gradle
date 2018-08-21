@@ -1,6 +1,4 @@
 ext {
-    kotlinVersion = "1.1.51"
-
     arrowCore = "io.arrow-kt:arrow-core:0.7.3"
     funktionaleTry = 'org.funktionale:funktionale-try:1.1'
     funktionaleEither = 'org.funktionale:funktionale-either:1.1'
@@ -17,7 +15,5 @@ ext {
     mockitoKotlin = "com.nhaarman:mockito-kotlin:1.5.0"
 
     /* Build dependencies */
-    gradleBintrayPlugin = 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-    gradleVersionsPlugin = "com.github.ben-manes:gradle-versions-plugin:0.15.0"
     kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 }
