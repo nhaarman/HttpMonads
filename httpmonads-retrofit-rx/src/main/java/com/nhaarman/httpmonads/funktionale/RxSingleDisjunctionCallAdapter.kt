@@ -1,13 +1,18 @@
-package com.nhaarman.httpmonads
+package com.nhaarman.httpmonads.funktionale
 
-import com.jakewharton.retrofit2.adapter.rxjava2.*
 import com.jakewharton.retrofit2.adapter.rxjava2.HttpException
-import com.nhaarman.httpmonads.HttpError.*
-import io.reactivex.*
-import org.funktionale.either.*
-import retrofit2.*
-import java.io.*
-import java.lang.reflect.*
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import com.nhaarman.httpmonads.HttpError
+import com.nhaarman.httpmonads.HttpError.NetworkError
+import com.nhaarman.httpmonads.toHttpError
+import io.reactivex.Scheduler
+import io.reactivex.Single
+import org.funktionale.either.Disjunction
+import retrofit2.Call
+import retrofit2.CallAdapter
+import retrofit2.Retrofit
+import java.io.IOException
+import java.lang.reflect.Type
 
 internal class RxSingleDisjunctionCallAdapter<R>(
       private val responseType: Type,
@@ -42,8 +47,8 @@ internal class RxSingleDisjunctionCallAdapter<R>(
             val rxDelegate = rxDelegate(scheduler, returnType, annotations, retrofit)
 
             return RxSingleDisjunctionCallAdapter(
-                  responseType,
-                  rxDelegate
+                responseType,
+                rxDelegate
             )
         }
 

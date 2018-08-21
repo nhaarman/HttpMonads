@@ -1,6 +1,7 @@
 ext {
     kotlinVersion = "1.1.51"
 
+    arrowCore = "io.arrow-kt:arrow-core:0.7.3"
     funktionaleTry = 'org.funktionale:funktionale-try:1.1'
     funktionaleEither = 'org.funktionale:funktionale-either:1.1'
     kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"

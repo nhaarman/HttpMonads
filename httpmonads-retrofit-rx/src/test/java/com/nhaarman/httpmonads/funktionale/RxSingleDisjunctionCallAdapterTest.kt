@@ -1,51 +1,56 @@
-package com.nhaarman.httpmonads
+package com.nhaarman.httpmonads.funktionale
 
 import com.google.common.reflect.TypeToken
 import com.nhaarman.expect.expect
-import com.nhaarman.httpmonads.HttpError.*
-import com.nhaarman.httpmonads.HttpError.ServerError5XX.*
-import com.nhaarman.httpmonads.HttpTry.*
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.httpmonads.HttpError
+import com.nhaarman.httpmonads.HttpError.NetworkError
+import com.nhaarman.httpmonads.HttpError.ServerError5XX.InternalServerError500
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.doThrow
+import com.nhaarman.mockito_kotlin.mock
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import okhttp3.Protocol.*
-import okhttp3.Request.*
+import okhttp3.Protocol.HTTP_1_1
+import okhttp3.Request.Builder
+import org.funktionale.either.Disjunction
 import org.junit.Test
-import retrofit2.*
+import retrofit2.Call
+import retrofit2.Response
+import retrofit2.Retrofit
 import java.io.IOException
 
-class RxSingleHttoTryCallAdapterTest {
+class RxSingleDisjunctionCallAdapterTest {
 
     @Test
-    fun `Single of HttpTry of String`() {
+    fun `Single of Disjunction of String`() {
         /* Given */
-        val adapter = RxSingleHttpTryCallAdapter.create(type<Single<HttpTry<String>>>(), String::class.java, emptyArray(), retrofit, Schedulers.io())
+        val adapter = RxSingleDisjunctionCallAdapter.create(type<Single<Disjunction<HttpError, String>>>(), String::class.java, emptyArray(), retrofit, Schedulers.io())
         val call: Call<Any> = successCall("Test", 200)
 
         /* When */
         val result = adapter.adapt(call).blockingGet()
 
         /* Then */
-        expect(result).toBe(Success("Test"))
+        expect(result).toBe(Disjunction.right("Test"))
     }
 
     @Test
-    fun `error Single of HttpTry of String`() {
+    fun `error Single of Disjunction of String`() {
         /* Given */
-        val adapter = RxSingleHttpTryCallAdapter.create(type<Single<HttpTry<String>>>(), String::class.java, emptyArray(), retrofit, Schedulers.io())
+        val adapter = RxSingleDisjunctionCallAdapter.create(type<Single<Disjunction<HttpError, String>>>(), String::class.java, emptyArray(), retrofit, Schedulers.io())
         val call: Call<Any> = errorCall(500)
 
         /* When */
         val result = adapter.adapt(call).blockingGet()
 
         /* Then */
-        expect(result).toBe(Failure(InternalServerError500))
+        expect(result).toBe(Disjunction.left(InternalServerError500))
     }
 
     @Test
-    fun `IOException Single of HttpTry of String`() {
+    fun `IOException Single of Disjunction of String`() {
         /* Given */
-        val adapter = RxSingleHttpTryCallAdapter.create(type<Single<HttpTry<String>>>(), String::class.java, emptyArray(), retrofit, Schedulers.io())
+        val adapter = RxSingleDisjunctionCallAdapter.create(type<Single<Disjunction<HttpError, String>>>(), String::class.java, emptyArray(), retrofit, Schedulers.io())
         val e = IOException("Test")
         val call: Call<Any> = networkErrorCall(e)
 
@@ -53,7 +58,7 @@ class RxSingleHttoTryCallAdapterTest {
         val result = adapter.adapt(call).blockingGet()
 
         /* Then */
-        expect(result).toBe(Failure(NetworkError(e)))
+        expect(result).toBe(Disjunction.left(NetworkError(e)))
     }
 
     val retrofit = Retrofit.Builder().baseUrl("http://localhost").build()
