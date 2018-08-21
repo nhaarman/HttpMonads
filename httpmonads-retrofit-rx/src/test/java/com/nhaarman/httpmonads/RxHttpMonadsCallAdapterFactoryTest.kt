@@ -1,11 +1,13 @@
 package com.nhaarman.httpmonads
 
-import com.google.common.reflect.*
-import com.nhaarman.expect.*
-import io.reactivex.*
-import org.funktionale.either.Disjunction
-import org.junit.*
-import retrofit2.Retrofit.*
+import com.google.common.reflect.TypeToken
+import com.nhaarman.expect.expect
+import com.nhaarman.expect.expectErrorWithMessage
+import com.nhaarman.httpmonads.arrow.RxSingleEitherCallAdapter
+import com.nhaarman.httpmonads.funktionale.RxSingleDisjunctionCallAdapter
+import io.reactivex.Single
+import org.junit.Test
+import retrofit2.Retrofit.Builder
 
 class RxHttpMonadsCallAdapterFactoryTest {
 
@@ -51,10 +53,19 @@ class RxHttpMonadsCallAdapterFactoryTest {
     @Test
     fun `adapter for Single of Disjunction`() {
         /* When */
-        val result = factory.get(type<Single<Disjunction<HttpError, String>>>(), emptyArray(), retrofit)
+        val result = factory.get(type<Single<org.funktionale.either.Disjunction<HttpError, String>>>(), emptyArray(), retrofit)
 
         /* Then */
         expect(result).toBeInstanceOf<RxSingleDisjunctionCallAdapter<*>>()
+    }
+
+    @Test
+    fun `adapter for Single of Either`() {
+        /* When */
+        val result = factory.get(type<Single<arrow.core.Either<HttpError, String>>>(), emptyArray(), retrofit)
+
+        /* Then */
+        expect(result).toBeInstanceOf<RxSingleEitherCallAdapter<*>>()
     }
 
     val retrofit = Builder().baseUrl("http://localhost").build()

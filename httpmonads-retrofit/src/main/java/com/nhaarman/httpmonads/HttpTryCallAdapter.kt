@@ -1,7 +1,9 @@
 package com.nhaarman.httpmonads
 
 import com.nhaarman.httpmonads.HttpTry.Success
-import retrofit2.*
+import retrofit2.Call
+import retrofit2.CallAdapter
+import retrofit2.Response
 import java.io.IOException
 import java.lang.reflect.Type
 
@@ -9,7 +11,7 @@ import java.lang.reflect.Type
  * A [CallAdapter] that adapts [Call]s to [HttpTry]s.
  */
 internal class HttpTryCallAdapter<R> private constructor(
-      private val responseType: Type
+    private val responseType: Type
 ) : CallAdapter<R, HttpTry<R>> {
 
     override fun responseType() = responseType
@@ -33,7 +35,7 @@ internal class HttpTryCallAdapter<R> private constructor(
     }
 
     private fun <R> Response<R>.isSuccessfulWithBody() =
-          code() >= 200 && code() < 300 && code() != 204 && code() != 205
+        code() >= 200 && code() < 300 && code() != 204 && code() != 205
 
     companion object {
 

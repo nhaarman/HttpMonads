@@ -1,8 +1,11 @@
-package com.nhaarman.httpmonads
+package com.nhaarman.httpmonads.arrow
 
+import arrow.core.Either
 import com.jakewharton.retrofit2.adapter.rxjava2.HttpException
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import com.nhaarman.httpmonads.HttpError
 import com.nhaarman.httpmonads.HttpError.NetworkError
+import com.nhaarman.httpmonads.toHttpError
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import retrofit2.Call
@@ -11,21 +14,21 @@ import retrofit2.Retrofit
 import java.io.IOException
 import java.lang.reflect.Type
 
-internal class RxSingleHttpTryCallAdapter<R>(
-      private val responseType: Type,
-      private val rxDelegate: CallAdapter<R, Single<*>>
+internal class RxSingleEitherCallAdapter<R>(
+    private val responseType: Type,
+    private val rxDelegate: CallAdapter<R, Single<*>>
 ) : CallAdapter<R, Single<*>> {
 
     override fun adapt(call: Call<R>): Single<*> {
         return rxDelegate.adapt(call)
-              .map { HttpTry.success(it) }
-              .onErrorResumeNext { t ->
-                  when (t) {
-                      is HttpException -> Single.just(HttpTry.failure(t.response().toHttpError()))
-                      is IOException -> Single.just(HttpTry.failure(NetworkError(t)))
-                      else -> Single.error(t)
-                  }
-              }
+            .map<Either<HttpError, Any>> { Either.right(it) }
+            .onErrorResumeNext { t ->
+                when (t) {
+                    is HttpException -> Single.just(Either.left(t.response().toHttpError()))
+                    is IOException -> Single.just(Either.left(NetworkError(t)))
+                    else -> Single.error(t)
+                }
+            }
     }
 
     override fun responseType(): Type {
@@ -35,17 +38,17 @@ internal class RxSingleHttpTryCallAdapter<R>(
     companion object {
 
         fun create(
-              returnType: Type,
-              responseType: Type,
-              annotations: Array<out Annotation>,
-              retrofit: Retrofit,
-              scheduler: Scheduler
-        ): RxSingleHttpTryCallAdapter<Any> {
+            returnType: Type,
+            responseType: Type,
+            annotations: Array<out Annotation>,
+            retrofit: Retrofit,
+            scheduler: Scheduler
+        ): RxSingleEitherCallAdapter<Any> {
             val rxDelegate = rxDelegate(scheduler, returnType, annotations, retrofit)
 
-            return RxSingleHttpTryCallAdapter(
-                  responseType,
-                  rxDelegate
+            return RxSingleEitherCallAdapter(
+                responseType,
+                rxDelegate
             )
         }
 
