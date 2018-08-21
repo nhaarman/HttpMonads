@@ -1,51 +1,55 @@
 package com.nhaarman.httpmonads
 
+import arrow.core.Either
 import com.google.common.reflect.TypeToken
 import com.nhaarman.expect.expect
 import com.nhaarman.httpmonads.HttpError.NetworkError
 import com.nhaarman.httpmonads.HttpError.ServerError5XX.InternalServerError500
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.doThrow
+import com.nhaarman.mockito_kotlin.mock
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Protocol.HTTP_1_1
 import okhttp3.Request.Builder
-import org.funktionale.either.Disjunction
 import org.junit.Test
-import retrofit2.*
+import retrofit2.Call
+import retrofit2.Response
+import retrofit2.Retrofit
 import java.io.IOException
 
-class RxSingleDisjunctionCallAdapterTest {
+class RxSingleEitherCallAdapterTest {
 
     @Test
-    fun `Single of Disjunction of String`() {
+    fun `Single of Either of String`() {
         /* Given */
-        val adapter = RxSingleDisjunctionCallAdapter.create(type<Single<Disjunction<HttpError, String>>>(), String::class.java, emptyArray(), retrofit, Schedulers.io())
+        val adapter = RxSingleEitherCallAdapter.create(type<Single<Either<HttpError, String>>>(), String::class.java, emptyArray(), retrofit, Schedulers.io())
         val call: Call<Any> = successCall("Test", 200)
 
         /* When */
         val result = adapter.adapt(call).blockingGet()
 
         /* Then */
-        expect(result).toBe(Disjunction.right("Test"))
+        expect(result).toBe(Either.right("Test"))
     }
 
     @Test
-    fun `error Single of Disjunction of String`() {
+    fun `error Single of Either of String`() {
         /* Given */
-        val adapter = RxSingleDisjunctionCallAdapter.create(type<Single<Disjunction<HttpError, String>>>(), String::class.java, emptyArray(), retrofit, Schedulers.io())
+        val adapter = RxSingleEitherCallAdapter.create(type<Single<Either<HttpError, String>>>(), String::class.java, emptyArray(), retrofit, Schedulers.io())
         val call: Call<Any> = errorCall(500)
 
         /* When */
         val result = adapter.adapt(call).blockingGet()
 
         /* Then */
-        expect(result).toBe(Disjunction.left(InternalServerError500))
+        expect(result).toBe(Either.left(InternalServerError500))
     }
 
     @Test
-    fun `IOException Single of Disjunction of String`() {
+    fun `IOException Single of Either of String`() {
         /* Given */
-        val adapter = RxSingleDisjunctionCallAdapter.create(type<Single<Disjunction<HttpError, String>>>(), String::class.java, emptyArray(), retrofit, Schedulers.io())
+        val adapter = RxSingleEitherCallAdapter.create(type<Single<Either<HttpError, String>>>(), String::class.java, emptyArray(), retrofit, Schedulers.io())
         val e = IOException("Test")
         val call: Call<Any> = networkErrorCall(e)
 
@@ -53,7 +57,7 @@ class RxSingleDisjunctionCallAdapterTest {
         val result = adapter.adapt(call).blockingGet()
 
         /* Then */
-        expect(result).toBe(Disjunction.left(NetworkError(e)))
+        expect(result).toBe(Either.left(NetworkError(e)))
     }
 
     val retrofit = Retrofit.Builder().baseUrl("http://localhost").build()

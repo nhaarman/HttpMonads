@@ -1,10 +1,14 @@
 package com.nhaarman.httpmonads
 
-import com.nhaarman.httpmonads.internal.*
-import io.reactivex.*
-import io.reactivex.schedulers.*
-import retrofit2.*
-import java.lang.reflect.*
+import com.nhaarman.httpmonads.internal.getParameterUpperBound
+import com.nhaarman.httpmonads.internal.rawTypeFor
+import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
+import retrofit2.CallAdapter
+import retrofit2.Retrofit
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 
 class RxHttpMonadsCallAdapterFactory private constructor(
       private val delegate: HttpMonadsCallAdapterFactory,
@@ -32,9 +36,9 @@ class RxHttpMonadsCallAdapterFactory private constructor(
             )
         }
 
-        if (rawTypeFor(responseType).name == "org.funktionale.either.Disjunction") {
+        if (rawTypeFor(responseType).name == "arrow.core.Either") {
             responseType = (responseType as ParameterizedType).getParameterUpperBound(1)
-            return RxSingleDisjunctionCallAdapter.create(
+            return RxSingleEitherCallAdapter.create(
                   returnType,
                   responseType,
                   annotations,

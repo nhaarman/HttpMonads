@@ -1,8 +1,11 @@
 package com.nhaarman.httpmonads
 
-import com.nhaarman.httpmonads.internal.*
-import retrofit2.*
-import java.lang.reflect.*
+import com.nhaarman.httpmonads.internal.getParameterUpperBound
+import com.nhaarman.httpmonads.internal.rawTypeFor
+import retrofit2.CallAdapter
+import retrofit2.Retrofit
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 
 class HttpMonadsCallAdapterFactory private constructor(
       private val supportedReturnTypes: Map<Type?, (responseType: Type) -> CallAdapter<*, *>>
@@ -27,7 +30,7 @@ class HttpMonadsCallAdapterFactory private constructor(
             return HttpMonadsCallAdapterFactory(
                   mapOf(
                         HttpTry::class.java to HttpTryCallAdapter.Companion::create,
-                        typeFor("org.funktionale.either.Disjunction") to DisjunctionCallAdapter.Companion::create
+                        typeFor("arrow.core.Either") to EitherCallAdapter.Companion::create
                   )
             )
         }

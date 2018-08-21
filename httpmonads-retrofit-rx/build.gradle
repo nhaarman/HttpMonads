@@ -10,7 +10,7 @@ dependencies {
     compile rxJava
     compile retrofit2RxJava2Adapter
 
-    compileOnly funktionaleEither
+    compileOnly arrowCore
 
     /* Tests */
     testCompile jUnit
@@ -18,5 +18,5 @@ dependencies {
     testCompile mockitoKotlin
     testCompile guava
     testCompile kotlinReflect
-    testCompile funktionaleEither
+    testCompile arrowCore
 }

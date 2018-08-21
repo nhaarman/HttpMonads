@@ -8,8 +8,8 @@ dependencies {
     compile project(':httpmonads')
 
     compile retrofit2
-    
-    compileOnly funktionaleEither
+
+    compileOnly arrowCore
 
     /* Tests */
     testCompile jUnit
@@ -17,5 +17,5 @@ dependencies {
     testCompile mockitoKotlin
     testCompile guava
     testCompile kotlinReflect
-    testCompile funktionaleEither
+    testCompile arrowCore
 }
