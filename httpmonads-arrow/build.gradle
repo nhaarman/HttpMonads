@@ -8,6 +8,5 @@ dependencies {
     compile project(':httpmonads')
     compile kotlinStdLib
 
-    compile funktionaleTry
-    compile funktionaleEither
+    compile arrowCore
 }

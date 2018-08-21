@@ -1,10 +1,11 @@
 package com.nhaarman.httpmonads
 
-import com.google.common.reflect.*
-import com.nhaarman.expect.*
-import org.funktionale.either.*
-import org.junit.*
-import retrofit2.Retrofit.*
+import arrow.core.Either
+import com.google.common.reflect.TypeToken
+import com.nhaarman.expect.expect
+import com.nhaarman.expect.expectErrorWithMessage
+import org.junit.Test
+import retrofit2.Retrofit.Builder
 
 class HttpMonadsCallAdapterFactoryTest {
 
@@ -39,12 +40,12 @@ class HttpMonadsCallAdapterFactoryTest {
     }
 
     @Test
-    fun `adapter for Disjunction`() {
+    fun `adapter for Either`() {
         /* When */
-        val result = factory.get(type<Disjunction<Any, Any>>(), emptyArray(), retrofit)
+        val result = factory.get(type<Either<Any, Any>>(), emptyArray(), retrofit)
 
         /* Then */
-        expect(result).toBeInstanceOf<DisjunctionCallAdapter<*>>()
+        expect(result).toBeInstanceOf<EitherCallAdapter<*>>()
     }
 
     val retrofit = Builder().baseUrl("http://localhost").build()

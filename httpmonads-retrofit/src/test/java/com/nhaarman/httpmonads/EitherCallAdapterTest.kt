@@ -1,88 +1,90 @@
 package com.nhaarman.httpmonads
 
+import arrow.core.Either
 import com.nhaarman.expect.expect
 import com.nhaarman.httpmonads.HttpError.NetworkError
 import com.nhaarman.httpmonads.HttpError.ServerError5XX.InternalServerError500
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.doThrow
+import com.nhaarman.mockito_kotlin.mock
 import okhttp3.Protocol.HTTP_1_1
 import okhttp3.Request.Builder
-import org.funktionale.either.Disjunction
 import org.junit.Test
 import retrofit2.Call
 import retrofit2.Response
 import java.io.IOException
 
-class DisjunctionCallAdapterTest {
+class EitherCallAdapterTest {
 
     @Test
     fun `adapting a 200 success response`() {
         /* Given */
-        val adapter = DisjunctionCallAdapter.createFromClass(String::class.java)
+        val adapter = EitherCallAdapter.createFromClass(String::class.java)
         val call = successCall("Test", 200)
 
         /* When */
         val result = adapter.adapt(call)
 
         /* Then */
-        expect(result).toBe(Disjunction.right("Test"))
+        expect(result).toBe(Either.right("Test"))
     }
 
     @Test
     fun `adapting a 200 success response for Unit`() {
         /* Given */
-        val adapter = DisjunctionCallAdapter.createFromClass(Unit::class.java)
+        val adapter = EitherCallAdapter.createFromClass(Unit::class.java)
         val call = successCall<Unit>(null, 200)
 
         /* When */
         val result = adapter.adapt(call)
 
         /* Then */
-        expect(result).toBe(Disjunction.right(Unit))
+        expect(result).toBe(Either.right(Unit))
     }
 
     @Test
     fun `adapting a 204 success response for Unit`() {
         /* Given */
-        val adapter = DisjunctionCallAdapter.createFromClass(Unit::class.java)
+        val adapter = EitherCallAdapter.createFromClass(Unit::class.java)
         val call = successCall<Unit>(null, 204)
 
         /* When */
         val result = adapter.adapt(call)
 
         /* Then */
-        expect(result).toBe(Disjunction.right(Unit))
+        expect(result).toBe(Either.right(Unit))
     }
 
     @Test
     fun `adapting a 205 success response for Unit`() {
         /* Given */
-        val adapter = DisjunctionCallAdapter.createFromClass(Unit::class.java)
+        val adapter = EitherCallAdapter.createFromClass(Unit::class.java)
         val call = successCall<Unit>(null, 205)
 
         /* When */
         val result = adapter.adapt(call)
 
         /* Then */
-        expect(result).toBe(Disjunction.right(Unit))
+        expect(result).toBe(Either.right(Unit))
     }
 
     @Test
     fun `adapting a 500 failed response`() {
         /* Given */
-        val adapter = DisjunctionCallAdapter.createFromClass(String::class.java)
+        val adapter = EitherCallAdapter.createFromClass(String::class.java)
         val call = errorCall<String>(500)
 
         /* When */
         val result = adapter.adapt(call)
 
         /* Then */
-        expect(result).toBe(Disjunction.left(InternalServerError500))
+        expect(result).toBe(Either.left(InternalServerError500))
     }
 
     @Test
     fun `adapting an IOException`() {
         /* Given */
-        val adapter = DisjunctionCallAdapter.createFromClass(String::class.java)
+        val adapter = EitherCallAdapter.createFromClass(String::class.java)
         val exception = IOException("Test")
         val call = networkErrorCall<String>(exception)
 
@@ -90,7 +92,7 @@ class DisjunctionCallAdapterTest {
         val result = adapter.adapt(call)
 
         /* Then */
-        expect(result).toBe(Disjunction.left(NetworkError(exception)))
+        expect(result).toBe(Either.left(NetworkError(exception)))
     }
 
     private fun <T> successCall(body: T?, code: Int): Call<T> {

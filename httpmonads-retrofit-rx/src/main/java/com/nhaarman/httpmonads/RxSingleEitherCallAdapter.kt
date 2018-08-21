@@ -1,26 +1,29 @@
 package com.nhaarman.httpmonads
 
-import com.jakewharton.retrofit2.adapter.rxjava2.*
+import arrow.core.Either
 import com.jakewharton.retrofit2.adapter.rxjava2.HttpException
-import com.nhaarman.httpmonads.HttpError.*
-import io.reactivex.*
-import org.funktionale.either.*
-import retrofit2.*
-import java.io.*
-import java.lang.reflect.*
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import com.nhaarman.httpmonads.HttpError.NetworkError
+import io.reactivex.Scheduler
+import io.reactivex.Single
+import retrofit2.Call
+import retrofit2.CallAdapter
+import retrofit2.Retrofit
+import java.io.IOException
+import java.lang.reflect.Type
 
-internal class RxSingleDisjunctionCallAdapter<R>(
+internal class RxSingleEitherCallAdapter<R>(
       private val responseType: Type,
       private val rxDelegate: CallAdapter<R, Single<*>>
 ) : CallAdapter<R, Single<*>> {
 
     override fun adapt(call: Call<R>): Single<*> {
         return rxDelegate.adapt(call)
-              .map<Disjunction<HttpError, Any>> { Disjunction.right(it) }
+              .map<Either<HttpError, Any>> { Either.right(it) }
               .onErrorResumeNext { t ->
                   when (t) {
-                      is HttpException -> Single.just(Disjunction.left(t.response().toHttpError()))
-                      is IOException -> Single.just(Disjunction.left(NetworkError(t)))
+                      is HttpException -> Single.just(Either.left(t.response().toHttpError()))
+                      is IOException -> Single.just(Either.left(NetworkError(t)))
                       else -> Single.error(t)
                   }
               }
@@ -38,10 +41,10 @@ internal class RxSingleDisjunctionCallAdapter<R>(
               annotations: Array<out Annotation>,
               retrofit: Retrofit,
               scheduler: Scheduler
-        ): RxSingleDisjunctionCallAdapter<Any> {
+        ): RxSingleEitherCallAdapter<Any> {
             val rxDelegate = rxDelegate(scheduler, returnType, annotations, retrofit)
 
-            return RxSingleDisjunctionCallAdapter(
+            return RxSingleEitherCallAdapter(
                   responseType,
                   rxDelegate
             )

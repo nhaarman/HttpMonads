@@ -1,8 +1,7 @@
 ext {
     kotlinVersion = "1.1.51"
 
-    funktionaleTry = 'org.funktionale:funktionale-try:1.1'
-    funktionaleEither = 'org.funktionale:funktionale-either:1.1'
+    arrowCore = "io.arrow-kt:arrow-core:0.7.3"
     kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     retrofit2 = "com.squareup.retrofit2:retrofit:2.3.0"
     rxJava = "io.reactivex.rxjava2:rxjava:2.1.5"
