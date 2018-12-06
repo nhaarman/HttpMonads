@@ -31,3 +31,8 @@ fun <R> HttpTry<R>.getOrElse(default: () -> R): R = when (this) {
     is HttpTry.Success -> value
     is HttpTry.Failure -> default()
 }
+
+fun <R> HttpTry<R>.orNull(): R? = when (this) {
+    is HttpTry.Success -> value
+    is HttpTry.Failure -> null
+}
