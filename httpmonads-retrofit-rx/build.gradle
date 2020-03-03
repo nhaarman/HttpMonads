@@ -22,4 +22,5 @@ dependencies {
     testCompile kotlinReflect
     testCompile funktionaleEither
     testCompile arrowCore
+    testCompile retrofit2ConverterScalars
 }
