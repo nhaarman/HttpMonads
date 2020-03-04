@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken
 import com.nhaarman.expect.expect
 import com.nhaarman.expect.expectErrorWithMessage
 import com.nhaarman.httpmonads.arrow.EitherCallAdapter
+import com.nhaarman.httpmonads.internal.HttpTryCallAdapter
 import org.junit.Test
 import retrofit2.Retrofit.Builder
 

@@ -3,6 +3,7 @@ package com.nhaarman.httpmonads
 import com.nhaarman.expect.expect
 import com.nhaarman.httpmonads.HttpError.NetworkError
 import com.nhaarman.httpmonads.HttpError.ServerError5XX.InternalServerError500
+import com.nhaarman.httpmonads.internal.HttpTryCallAdapter
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.doThrow
 import com.nhaarman.mockito_kotlin.mock
@@ -96,16 +97,17 @@ class HttpTryCallAdapterTest {
 
     private fun <T> successCall(body: T?, code: Int): Call<T> {
         val response = Response.success(
-              body,
-              okhttp3.Response.Builder()
-                    .request(Request.Builder()
-                          .url("http://localhost")
-                          .build()
-                    )
-                    .protocol(HTTP_1_1)
-                    .code(code)
-                    .message("$body")
-                    .build()
+            body,
+            okhttp3.Response.Builder()
+                .request(
+                    Request.Builder()
+                        .url("http://localhost")
+                        .build()
+                )
+                .protocol(HTTP_1_1)
+                .code(code)
+                .message("$body")
+                .build()
         )
 
         return mock {
