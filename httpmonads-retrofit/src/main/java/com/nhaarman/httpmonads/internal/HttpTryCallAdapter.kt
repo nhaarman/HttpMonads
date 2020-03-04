@@ -1,6 +1,10 @@
-package com.nhaarman.httpmonads
+package com.nhaarman.httpmonads.internal
 
+import com.nhaarman.httpmonads.HttpError.NetworkError
+import com.nhaarman.httpmonads.HttpTry
+import com.nhaarman.httpmonads.HttpTry.Failure
 import com.nhaarman.httpmonads.HttpTry.Success
+import com.nhaarman.httpmonads.toHttpError
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Response
@@ -22,10 +26,14 @@ internal class HttpTryCallAdapter<R> private constructor(
             when {
                 responseType == Unit::class.java && response.isSuccessful -> successfulUnitResult()
                 response.isSuccessfulWithBody() -> HttpTry.Success(response.body()!!)
-                else -> HttpTry.Failure(response.toHttpError())
+                else -> Failure(response.toHttpError())
             }
         } catch (e: IOException) {
-            HttpTry.Failure(HttpError.NetworkError(e))
+            Failure(
+                NetworkError(
+                    e
+                )
+            )
         }
     }
 
@@ -39,7 +47,10 @@ internal class HttpTryCallAdapter<R> private constructor(
 
     companion object {
 
-        fun create(responseType: Type) = HttpTryCallAdapter<Any>(responseType)
-        fun <R> createFromClass(responseType: Class<R>) = HttpTryCallAdapter<R>(responseType)
+        fun create(responseType: Type) =
+            HttpTryCallAdapter<Any>(responseType)
+
+        fun <R> createFromClass(responseType: Class<R>) =
+            HttpTryCallAdapter<R>(responseType)
     }
 }
