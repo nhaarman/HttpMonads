@@ -1,18 +1,18 @@
 ext {
-    arrowCore = "io.arrow-kt:arrow-core:0.7.3"
-    funktionaleTry = 'org.funktionale:funktionale-try:1.1'
-    funktionaleEither = 'org.funktionale:funktionale-either:1.1'
+    arrowCore = "io.arrow-kt:arrow-core:0.10.4"
+    funktionaleTry = 'org.funktionale:funktionale-try:1.2'
+    funktionaleEither = 'org.funktionale:funktionale-either:1.2'
     kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    retrofit2 = "com.squareup.retrofit2:retrofit:2.3.0"
-    rxJava = "io.reactivex.rxjava2:rxjava:2.1.5"
+    retrofit2 = "com.squareup.retrofit2:retrofit:2.7.2"
+    rxJava = "io.reactivex.rxjava2:rxjava:2.2.18"
     retrofit2RxJava2Adapter = 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
 
     /* Test dependencies */
-    expectKt = "com.nhaarman:expect.kt:0.6.2"
-    guava = "com.google.guava:guava:22.0"
-    jUnit = "junit:junit:4.12"
+    expectKt = "com.nhaarman:expect.kt:1.0.1"
+    guava = "com.google.guava:guava:28.2-jre"
+    jUnit = "junit:junit:4.13"
     kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
-    mockitoKotlin = "com.nhaarman:mockito-kotlin:1.5.0"
+    mockitoKotlin = "com.nhaarman:mockito-kotlin:1.6.0"
 
     /* Build dependencies */
     kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
