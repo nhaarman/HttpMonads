@@ -1,7 +1,6 @@
 package com.nhaarman.httpmonads
 
 import com.nhaarman.httpmonads.arrow.RxSingleEitherCallAdapter
-import com.nhaarman.httpmonads.funktionale.RxSingleDisjunctionCallAdapter
 import com.nhaarman.httpmonads.internal.getParameterUpperBound
 import com.nhaarman.httpmonads.internal.rawTypeFor
 import io.reactivex.Scheduler
@@ -17,7 +16,11 @@ class RxHttpMonadsCallAdapterFactory private constructor(
     private val defaultScheduler: Scheduler
 ) : CallAdapter.Factory() {
 
-    override fun get(returnType: Type, annotations: Array<out Annotation>, retrofit: Retrofit): CallAdapter<*, *>? {
+    override fun get(
+        returnType: Type,
+        annotations: Array<out Annotation>,
+        retrofit: Retrofit
+    ): CallAdapter<*, *>? {
         if (rawTypeFor(returnType) != Single::class.java) {
             return delegate.get(returnType, annotations, retrofit)
         }
@@ -30,17 +33,6 @@ class RxHttpMonadsCallAdapterFactory private constructor(
         if (rawTypeFor(responseType) == HttpTry::class.java) {
             responseType = (responseType as ParameterizedType).getParameterUpperBound(0)
             return RxSingleHttpTryCallAdapter.create(
-                returnType,
-                responseType,
-                annotations,
-                retrofit,
-                defaultScheduler
-            )
-        }
-
-        if (rawTypeFor(responseType).name == "org.funktionale.either.Disjunction") {
-            responseType = (responseType as ParameterizedType).getParameterUpperBound(1)
-            return RxSingleDisjunctionCallAdapter.create(
                 returnType,
                 responseType,
                 annotations,

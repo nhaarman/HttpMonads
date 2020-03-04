@@ -4,7 +4,6 @@ import com.google.common.reflect.TypeToken
 import com.nhaarman.expect.expect
 import com.nhaarman.expect.expectErrorWithMessage
 import com.nhaarman.httpmonads.arrow.RxSingleEitherCallAdapter
-import com.nhaarman.httpmonads.funktionale.RxSingleDisjunctionCallAdapter
 import io.reactivex.Single
 import org.junit.Test
 import retrofit2.Retrofit.Builder
@@ -48,15 +47,6 @@ class RxHttpMonadsCallAdapterFactoryTest {
 
         /* Then */
         expect(result).toBeInstanceOf<RxSingleHttpTryCallAdapter<*>>()
-    }
-
-    @Test
-    fun `adapter for Single of Disjunction`() {
-        /* When */
-        val result = factory.get(type<Single<org.funktionale.either.Disjunction<HttpError, String>>>(), emptyArray(), retrofit)
-
-        /* Then */
-        expect(result).toBeInstanceOf<RxSingleDisjunctionCallAdapter<*>>()
     }
 
     @Test

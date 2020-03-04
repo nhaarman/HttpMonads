@@ -4,7 +4,6 @@ import com.google.common.reflect.TypeToken
 import com.nhaarman.expect.expect
 import com.nhaarman.expect.expectErrorWithMessage
 import com.nhaarman.httpmonads.arrow.EitherCallAdapter
-import com.nhaarman.httpmonads.funktionale.DisjunctionCallAdapter
 import org.junit.Test
 import retrofit2.Retrofit.Builder
 
@@ -38,15 +37,6 @@ class HttpMonadsCallAdapterFactoryTest {
 
         /* Then */
         expect(result).toBeInstanceOf<HttpTryCallAdapter<*>>()
-    }
-
-    @Test
-    fun `adapter for Disjunction`() {
-        /* When */
-        val result = factory.get(type<org.funktionale.either.Disjunction<Any, Any>>(), emptyArray(), retrofit)
-
-        /* Then */
-        expect(result).toBeInstanceOf<DisjunctionCallAdapter<*>>()
     }
 
     @Test

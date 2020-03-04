@@ -1,5 +1,4 @@
 include ':httpmonads'
 include ':httpmonads-arrow'
-include ':httpmonads-funktionale'
 include ':httpmonads-retrofit'
 include ':httpmonads-retrofit-rx'
