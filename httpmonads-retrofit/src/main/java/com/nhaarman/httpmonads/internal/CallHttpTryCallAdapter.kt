@@ -48,13 +48,11 @@ internal class CallHttpTryCallAdapter private constructor(
                 }
 
                 override fun onFailure(call: Call<T>, t: Throwable) {
-                    val result = if (t is IOException) {
-                        Failure(NetworkError(t))
+                    if (t is IOException) {
+                        callback.onResponse(this@HttpTryCall, Response.success(Failure(NetworkError(t))))
                     } else {
-                        throw t
+                        callback.onFailure(this@HttpTryCall, t)
                     }
-
-                    callback.onResponse(this@HttpTryCall, Response.success(result))
                 }
             })
         }

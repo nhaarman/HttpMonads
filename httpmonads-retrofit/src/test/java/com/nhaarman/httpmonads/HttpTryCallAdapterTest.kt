@@ -1,6 +1,7 @@
 package com.nhaarman.httpmonads
 
 import com.nhaarman.expect.expect
+import com.nhaarman.expect.expectErrorWithMessage
 import com.nhaarman.httpmonads.HttpError.NetworkError
 import com.nhaarman.httpmonads.HttpError.ServerError5XX.InternalServerError500
 import com.nhaarman.httpmonads.internal.HttpTryCallAdapter
@@ -95,6 +96,21 @@ class HttpTryCallAdapterTest {
         expect(result).toBe(HttpTry.Failure(NetworkError(exception)))
     }
 
+    @Test
+    fun `adapting a runtime exception throws exception`() {
+        /* Given */
+        val adapter = HttpTryCallAdapter.createFromClass(String::class.java)
+        val exception = Error("Test")
+        val call = throwableCall<String>(exception)
+
+        /* Expect */
+        expectErrorWithMessage("Test") on {
+
+            /* When */
+            adapter.adapt(call)
+        }
+    }
+
     private fun <T> successCall(body: T?, code: Int): Call<T> {
         val response = Response.success(
             body,
@@ -126,6 +142,12 @@ class HttpTryCallAdapterTest {
     private fun <T> networkErrorCall(e: IOException): Call<T> {
         return mock {
             on { execute() } doThrow e
+        }
+    }
+
+    private fun <T> throwableCall(t: Throwable): Call<T> {
+        return mock {
+            on { execute() } doThrow t
         }
     }
 }
