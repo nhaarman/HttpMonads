@@ -44,6 +44,7 @@ publishing {
 
             pom {
                 name = "HttpMonads"
+                description = "HttpMonads introduces monad types for working with Http requests."
                 url = "https://github.com/nhaarman/HttpMonads"
                 licenses {
                     license {
